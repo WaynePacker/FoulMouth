@@ -1,6 +1,7 @@
 package com.imy320.foultmouth.personaldigitaldairy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 public class Home extends AppCompatActivity {
 
     ListView listview;
+    ImageButton addNew_Button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,24 @@ public class Home extends AppCompatActivity {
         //TODO : once data is loaded into an array of DataItem[] then replace in the statement below
         listview.setAdapter(new CustomRowAdapter(this, new DataItem[]{itemOne, itemTwo, itemThree}));
 
+
+        //Assign and add the event listener on the 'addNew' button
+
+        addNew_Button = (ImageButton) findViewById(R.id.button_addNew);
+        addNew_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this,AddNewItem.class ));
+            }
+        });
+
+
+
+
+
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
