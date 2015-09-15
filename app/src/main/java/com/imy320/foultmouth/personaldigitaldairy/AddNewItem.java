@@ -2,6 +2,9 @@ package com.imy320.foultmouth.personaldigitaldairy;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,15 +12,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+
+import java.text.DateFormat;
 import java.util.Calendar;
 
-public class AddNewItem extends AppCompatActivity {
+public class AddNewItem extends  FragmentActivity {
 
     TextView datePicker;
-    int year_pick, month_pick, day_pick;
-    static final int DIALOG_ID = 0;
+    TextView timePicker;
+    private int curr_year, curr_month, curr_day, curr_hour, curr_minute;
+
 
 
     @Override
@@ -26,51 +33,121 @@ public class AddNewItem extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_item);
 
 
-        final Calendar cal = Calendar.getInstance();
-        year_pick = cal.get(Calendar.YEAR);
-        month_pick = cal.get(Calendar.MONTH);
-        day_pick = cal.get(Calendar.DAY_OF_MONTH);
-        datePicker.setText(day_pick + "/" + month_pick + "/" +year_pick);
-        showDialogOnPick();
-    }
-
-    ////Show the dialog for picking the date
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public void showDialogOnPick()
-    {
-        //test the button
+        //Assign the DatePicker
         datePicker = (TextView) findViewById(R.id.datePicker);
+        //Assign the TimePicker
+        timePicker =(TextView) findViewById(R.id.timePicker);
+
+        //Assign the calender to access the current date and time values
+        final Calendar cal = Calendar.getInstance();
+
+        //Set the date value to the current date
+        curr_year = cal.get(Calendar.YEAR);
+        curr_month = cal.get(Calendar.MONTH);
+        curr_day = cal.get(Calendar.DAY_OF_MONTH);
+        updateDate(curr_day, curr_month, curr_year);
+
+        //Set the time value to the current time
+        curr_hour = cal.get(Calendar.HOUR_OF_DAY);
+        curr_minute = cal.get(Calendar.MINUTE);
+        updateTime(curr_hour, curr_minute);
+
+
+        //Assign the datePicker its click listener
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(DIALOG_ID);
-                Toast.makeText(AddNewItem.this, "hallo", Toast.LENGTH_LONG).show();
+                doDatePicker(v);
             }
         });
+
+        //Assign the timePicker its click listener
+        timePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doTimePicker(v);
+            }
+        });
+
+
     }
 
-    @Override
-    public Dialog onCreateDialog(int id) {
-        if (id == DIALOG_ID)
-            return new DatePickerDialog(this, dPickerListener, year_pick, month_pick, day_pick);
-
-        return null;
+    //Display the Date Picker dialog
+    public void doDatePicker(View view)
+    {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
-    private DatePickerDialog.OnDateSetListener dPickerListener = new DatePickerDialog.OnDateSetListener()
-                                            {
+    //Display the Time Picker dialog
+    public void doTimePicker(View view)
+    {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
 
-                                                @Override
-                                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
-                                                {
-                                                    year_pick = year;
-                                                    month_pick = monthOfYear + 1;
-                                                    day_pick = dayOfMonth;
-                                                    datePicker.setText(day_pick + "/" + month_pick + "/" +year_pick);
-                                                }
-                                            };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Update the time TextView  in the view
+    public void updateTime(int hour, int minute)
+    {
+        timePicker.setText(hour + ":" + minute);
+    }
+
+    //Update the date TextView in the view
+    public void updateDate(int day, int month, int year)
+    {
+        datePicker.setText(day + "/" + month + "/" + year);
+    }
+
+
+    //Class to show the interface for picking a time
+    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
+    {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
+            //Use the current time as the default values for the picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            //Create a new instance of TimePickerDialog and return it
+            return  new TimePickerDialog(getActivity(), this, hour, minute, android.text.format.DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+        {
+            //Call the activity whom opened this fragment and set its time to the user input
+            ((AddNewItem) getActivity()).updateTime(hourOfDay,minute);
+
+        }
+    }
+
+    //Class to show the interface for picking a date
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
+    {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            //Call the activity whom opened this fragment and set its date to the user input, add 1 to month of year
+            //to get the correct month(starts at 0 for Jan)
+            ((AddNewItem) getActivity()).updateDate(dayOfMonth, monthOfYear + 1, year);
+        }
+
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
