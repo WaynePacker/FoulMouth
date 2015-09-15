@@ -3,102 +3,24 @@ package com.imy320.foultmouth.personaldigitaldairy;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.media.Image;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 
-import java.text.DateFormat;
 import java.util.Calendar;
 
 public class AddNewItem extends  FragmentActivity {
-
-    TextView datePicker;
-    TextView timePicker;
-    private int curr_year, curr_month, curr_day, curr_hour, curr_minute;
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_item);
-
-
-        //Assign the DatePicker
-        datePicker = (TextView) findViewById(R.id.datePicker);
-        //Assign the TimePicker
-        timePicker =(TextView) findViewById(R.id.timePicker);
-
-        //Assign the calender to access the current date and time values
-        final Calendar cal = Calendar.getInstance();
-
-        //Set the date value to the current date
-        curr_year = cal.get(Calendar.YEAR);
-        curr_month = cal.get(Calendar.MONTH);
-        curr_day = cal.get(Calendar.DAY_OF_MONTH);
-        updateDate(curr_day, curr_month, curr_year);
-
-        //Set the time value to the current time
-        curr_hour = cal.get(Calendar.HOUR_OF_DAY);
-        curr_minute = cal.get(Calendar.MINUTE);
-        updateTime(curr_hour, curr_minute);
-
-
-        //Assign the datePicker its click listener
-        datePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doDatePicker(v);
-            }
-        });
-
-        //Assign the timePicker its click listener
-        timePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doTimePicker(v);
-            }
-        });
-
-
-    }
-
-    //Display the Date Picker dialog
-    public void doDatePicker(View view)
-    {
-        DialogFragment newFragment = new DatePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    //Display the Time Picker dialog
-    public void doTimePicker(View view)
-    {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
-    }
-
-
-    //Update the time TextView  in the view
-    public void updateTime(int hour, int minute)
-    {
-        timePicker.setText(hour + ":" + minute);
-    }
-
-    //Update the date TextView in the view
-    public void updateDate(int day, int month, int year)
-    {
-        datePicker.setText(day + "/" + month + "/" + year);
-    }
-
 
     //Class to show the interface for picking a time
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
@@ -147,6 +69,138 @@ public class AddNewItem extends  FragmentActivity {
 
     }
 
+
+    //Assign the saveButton
+    ImageButton save_Button = (ImageButton) findViewById(R.id.button_item_Save);
+    //Assign the DatePicker
+    TextView datePicker = (TextView) findViewById(R.id.item_new_DatePicker);
+    //Assign the TimePicker
+    TextView timePicker =(TextView) findViewById(R.id.item_new_TimePicker);
+
+    private int curr_year, curr_month, curr_day, curr_hour, curr_minute;
+
+    private String item_Text = "";
+    private String item_Titel = "";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_add_new_item);
+
+        //Adjust the scrolling settings when keyboard is active
+        //Without this line the circle button scrolls up with the keyboard obstructing the view
+        //of th input texts
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        //Assign the calender to access the current date and time values
+        final Calendar cal = Calendar.getInstance();
+
+        //Set the date value to the current date
+        curr_year = cal.get(Calendar.YEAR);
+        curr_month = cal.get(Calendar.MONTH);
+        curr_day = cal.get(Calendar.DAY_OF_MONTH);
+        updateDate(curr_day, curr_month, curr_year);
+
+        //Set the time value to the current time
+        curr_hour = cal.get(Calendar.HOUR_OF_DAY);
+        curr_minute = cal.get(Calendar.MINUTE);
+        updateTime(curr_hour, curr_minute);
+
+
+        //Assign the datePicker its click listener
+        datePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doDatePicker(v);
+            }
+        });
+
+        //Assign the timePicker its click listener
+        timePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doTimePicker(v);
+            }
+        });
+
+        //Assign the save operation to the onclick of the save button
+        save_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doSaveItem();
+            }
+        });
+
+    }
+
+    //Container class to store all the values from the new item
+    public class DataContainer
+    {
+        int day, year, month, hour, minute;
+        String title, body_text;
+
+        public DataContainer(int day, int month, int year, int hour, int minute, String title, String body_text)
+        {
+            this.day = day;
+            this.month = month;
+            this.year = year;
+
+            this.hour = hour;
+            this.minute = minute;
+
+            this.title = title;
+            this.body_text = body_text;
+        }
+    }
+
+    //Save the content of the item
+    public void doSaveItem()
+    {
+            EditText txt_ref = (EditText) findViewById(R.id.item_new_Text);
+            item_Text = txt_ref.getText().toString();
+
+            EditText title_ref = (EditText) findViewById(R.id.item_new_Title);
+            item_Titel = title_ref.getText().toString();
+
+            DataContainer data = new DataContainer(curr_day, curr_month, curr_year, curr_hour, curr_minute, item_Titel, item_Text);
+
+        //TODO : use the data container to store all the data the user has inputted
+    }
+
+
+    //Display the Date Picker dialog
+    public void doDatePicker(View view)
+    {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    //Display the Time Picker dialog
+    public void doTimePicker(View view)
+    {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+
+    //Update the time TextView  in the view
+    public void updateTime(int hour, int minute)
+    {
+        timePicker.setText(hour + ":" + minute);
+
+        curr_hour = hour;
+        curr_minute = minute;
+    }
+
+    //Update the date TextView in the view
+    public void updateDate(int day, int month, int year)
+    {
+        datePicker.setText(day + "/" + month + "/" + year);
+
+        curr_day = day;
+        curr_month = month;
+        curr_year = year;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

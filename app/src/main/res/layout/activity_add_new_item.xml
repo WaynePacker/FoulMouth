@@ -2,35 +2,84 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.imy320.foultmouth.personaldigitaldairy.AddNewItem">
+    tools:context="com.imy320.foultmouth.personaldigitaldairy.AddNewItem"
+
+    >
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/tool_bar"
         />
 
-    <TextView
-        android:text="dd/mm/yyyy"
+    <EditText
+        android:id="@+id/item_new_Title"
+        android:text="New Item Titel"
         android:layout_width="250dp"
         android:layout_height="60dp"
-        android:id="@+id/datePicker"
-
-        android:clickable="true"
-        android:textSize="40dp"
         android:textStyle="bold"
+        android:textSize="30dp"
+        android:layout_marginLeft="10dp"
         android:layout_below="@+id/toolbar"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentEnd="true"
+        android:lines="1"
+        android:maxLines="1"
+        android:maxLength="20"
+        android:singleLine="true"
+        android:textAlignment="center" />
 
     <TextView
-        android:text="Time"
-        android:layout_width="250dp"
+        android:id="@+id/item_new_DatePicker"
+        android:text="00/00/0000"
+        android:layout_width="200dp"
         android:layout_height="60dp"
-        android:id="@+id/timePicker"
         android:clickable="true"
-        android:textSize="40dp"
+        android:textSize="35dp"
         android:textStyle="bold"
-        android:layout_below="@+id/datePicker"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/item_new_Title"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/item_new_TimePicker"
+        android:text="00 : 00"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        android:clickable="true"
+        android:textSize="35dp"
+        android:textStyle="bold"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/item_new_Title"
         android:layout_alignParentStart="true" />
 
+    <EditText
+        android:id="@+id/item_new_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:layout_below="@+id/item_new_DatePicker"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:scrollbars="vertical"
+        android:maxHeight="400dp" />
+
+    <ImageButton
+        android:id="@+id/button_item_Save"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/circle"
+        android:layout_gravity="right|bottom"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="39dp"
+        android:layout_marginEnd="54dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:clickable="true"
+        />
 
 </RelativeLayout>
