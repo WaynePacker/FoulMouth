@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Personal Digital Dairy</string>
+    <string name="title_activity_home">Home</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_add_new_item">Add New Item</string>
 </resources>
