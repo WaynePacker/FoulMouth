@@ -3,7 +3,6 @@ package com.imy320.foultmouth.personaldigitaldairy;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.media.Image;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
@@ -16,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 
 import java.util.Calendar;
@@ -70,12 +70,12 @@ public class AddNewItem extends  FragmentActivity {
     }
 
 
-    //Assign the saveButton
-    ImageButton save_Button = (ImageButton) findViewById(R.id.button_item_Save);
-    //Assign the DatePicker
-    TextView datePicker = (TextView) findViewById(R.id.item_new_DatePicker);
-    //Assign the TimePicker
-    TextView timePicker =(TextView) findViewById(R.id.item_new_TimePicker);
+    //Variable saveButton
+    ImageButton save_Button;
+    //Variable DatePicker
+    TextView datePicker;
+    //Variable TimePicker
+    TextView timePicker;
 
     private int curr_year, curr_month, curr_day, curr_hour, curr_minute;
 
@@ -86,6 +86,19 @@ public class AddNewItem extends  FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_item);
+
+
+
+        //Assign the saveButton
+        save_Button = (ImageButton) findViewById(R.id.button_item_Save);
+        //Assign the DatePicker
+        datePicker = (TextView) findViewById(R.id.item_new_DatePicker);
+        //Assign the TimePicker
+        timePicker =(TextView) findViewById(R.id.item_new_TimePicker);
+
+
+        //set up the toolbar and its actions
+        setupToolbar();
 
         //Adjust the scrolling settings when keyboard is active
         //Without this line the circle button scrolls up with the keyboard obstructing the view
@@ -127,10 +140,24 @@ public class AddNewItem extends  FragmentActivity {
         save_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doSaveItem();
+               // doSaveItem();
             }
         });
 
+    }
+
+    //function to set up the various toolbar options
+    public void setupToolbar()
+    {
+        ImageButton exit_button = (ImageButton) findViewById(R.id.toolbar_button_right);
+        exit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Add New Item cancel, no data was saved",
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
     }
 
     //Container class to store all the values from the new item
@@ -156,13 +183,15 @@ public class AddNewItem extends  FragmentActivity {
     //Save the content of the item
     public void doSaveItem()
     {
-            EditText txt_ref = (EditText) findViewById(R.id.item_new_Text);
-            item_Text = txt_ref.getText().toString();
+        //Get the text of the item
+        EditText txt_ref = (EditText) findViewById(R.id.item_new_Text);
+        item_Text = txt_ref.getText().toString();
 
-            EditText title_ref = (EditText) findViewById(R.id.item_new_Title);
-            item_Titel = title_ref.getText().toString();
+        //Get the title of the item
+        EditText title_ref = (EditText) findViewById(R.id.item_new_Title);
+        item_Titel = title_ref.getText().toString();
 
-            DataContainer data = new DataContainer(curr_day, curr_month, curr_year, curr_hour, curr_minute, item_Titel, item_Text);
+        DataContainer data = new DataContainer(curr_day, curr_month, curr_year, curr_hour, curr_minute, item_Titel, item_Text);
 
         //TODO : use the data container to store all the data the user has inputted
     }
@@ -202,7 +231,7 @@ public class AddNewItem extends  FragmentActivity {
         curr_year = year;
     }
 
-    @Override
+ /*   @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_add_new_item, menu);
@@ -222,5 +251,5 @@ public class AddNewItem extends  FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

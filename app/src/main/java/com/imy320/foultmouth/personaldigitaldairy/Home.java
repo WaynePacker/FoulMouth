@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class Home extends AppCompatActivity {
 
     ListView listview;
@@ -43,8 +45,15 @@ public class Home extends AppCompatActivity {
         DataItem itemTwo = new DataItem("17/09/2015","Some test to write");
         DataItem itemThree = new DataItem("17/09/2015","Bitches Be cray cray");
 
-        //TODO : once data is loaded into an array of DataItem[] then replace in the statement below
-        listview.setAdapter(new CustomRowAdapter(this, new DataItem[]{itemOne, itemTwo, itemThree}));
+        //TODO : once data is loaded into an array list of DataItem then replace in the statement below
+
+        ArrayList<DataItem> todo =  new ArrayList<>();
+
+        todo.add(itemOne);
+        todo.add(itemTwo);
+        todo.add(itemThree);
+
+        listview.setAdapter(new CustomRowAdapter(this, todo));
 
 
         //Assign and add the event listener on the 'addNew' button
@@ -106,10 +115,10 @@ public class Home extends AppCompatActivity {
     {
 
         Context context;
-        DataItem[] data;
+        ArrayList<DataItem> data;
         private LayoutInflater inflater = null;
 
-        public CustomRowAdapter(Context context, DataItem[] data) {
+        public CustomRowAdapter(Context context, ArrayList<DataItem> data) {
 
             this.context = context;
             this.data = data;
@@ -119,13 +128,13 @@ public class Home extends AppCompatActivity {
         @Override
         public int getCount() {
 
-            return data.length;
+            return data.size();
         }
 
         @Override
         public Object getItem(int position) {
 
-            return data[position];
+            return data.get(position);
         }
 
         @Override
@@ -145,16 +154,16 @@ public class Home extends AppCompatActivity {
             //Populate a single row item
             //Day
             TextView textView = (TextView) vi.findViewById(R.id.item_day);
-            textView.setText(data[position].date);
+            textView.setText(data.get(position).date);
             //Month
             textView = (TextView) vi.findViewById(R.id.item_month);
-            textView.setText(data[position].date);
+            textView.setText(data.get(position).date);
             //Year
             textView = (TextView) vi.findViewById(R.id.item_year);
-            textView.setText(data[position].date);
+            textView.setText(data.get(position).date);
             //Title
             textView = (TextView) vi.findViewById(R.id.item_title);
-            textView.setText(data[position].title);
+            textView.setText(data.get(position).title);
 
 
             //Add onclick events to the edit and delete buttons of each of the row items
@@ -185,7 +194,7 @@ public class Home extends AppCompatActivity {
                 }});
         }
 
-        private void deleteButtonClick(int position, ImageButton editBut)
+        private void deleteButtonClick(final int position, ImageButton editBut)
         {
             final int pos = position;
             editBut.setOnClickListener(new View.OnClickListener() {
@@ -197,6 +206,9 @@ public class Home extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             "Delete Button " + pos + " clicked",
                             Toast.LENGTH_LONG).show();
+                    data.remove(position);
+                    notifyDataSetChanged();
+
                 }});
         }
 
