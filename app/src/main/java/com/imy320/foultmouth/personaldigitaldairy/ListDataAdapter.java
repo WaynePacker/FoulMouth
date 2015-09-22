@@ -67,9 +67,13 @@ public class ListDataAdapter extends ArrayAdapter
         else
         {
             layoutHandler = (LayoutHandler)row.getTag();
-            DataProvider dataProvider = (DataProvider)this.getItem(position);
         }
+        DataProvider dataProvider = (DataProvider)this.getItem(position);
+        layoutHandler.TITLE.setText(dataProvider.getEntryTitle());
+        layoutHandler.DATE.setText(dataProvider.getEntryDate());
+        layoutHandler.TIME.setText(dataProvider.getEntryTime());
+        layoutHandler.DETAILS.setText(dataProvider.getEntryDetails());
 
-        return super.getView(position, convertView, parent);
+        return row;
     }
 }

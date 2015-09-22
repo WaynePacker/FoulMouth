@@ -204,44 +204,44 @@ public class Home extends AppCompatActivity
 //            return vi;
 //        }
 
-        private void editButtonClick(int position, ImageButton editBut)
-        {
-            final int pos = position;
-            editBut.setOnClickListener(new View.OnClickListener() {
+//        private void editButtonClick(int position, ImageButton editBut)
+ //       {
+//            final int pos = position;
+ //           editBut.setOnClickListener(new View.OnClickListener() {
+//
+ //               @Override
+//                public void onClick(View arg0) {
+//
+//                    /** TODO : On the click of this button, a new activity should be started to edit the content of the button
+//                     * The content can be acquired by using data[position]
+//                     */
+//
+//
+//                    Toast.makeText(getApplicationContext(),
+//                            "Edit Button " + pos + " clicked",
+//                            Toast.LENGTH_LONG).show();
+//                }});
+//        }
 
-                @Override
-                public void onClick(View arg0) {
+//        private void deleteButtonClick(final int position, ImageButton editBut)
+//        {
+//            final int pos = position;
+//            editBut.setOnClickListener(new View.OnClickListener() {
+//                /** TODO : On the click of this button, the content of this item should be deleted off of the device and its entry in the database
+//                 * The content can be acquired by using data[position]
+//                 */
+//                @Override
+//                public void onClick(View arg0) {
+//                    Toast.makeText(getApplicationContext(),
+//                            "Delete Button " + pos + " clicked",
+//                            Toast.LENGTH_LONG).show();
+//                    data.remove(position);
+//                    notifyDataSetChanged();
 
-                    /** TODO : On the click of this button, a new activity should be started to edit the content of the button
-                     * The content can be acquired by using data[position]
-                     */
-
-
-                    Toast.makeText(getApplicationContext(),
-                            "Edit Button " + pos + " clicked",
-                            Toast.LENGTH_LONG).show();
-                }});
-        }
-
-        private void deleteButtonClick(final int position, ImageButton editBut)
-        {
-            final int pos = position;
-            editBut.setOnClickListener(new View.OnClickListener() {
-                /** TODO : On the click of this button, the content of this item should be deleted off of the device and its entry in the database
-                 * The content can be acquired by using data[position]
-                 */
-                @Override
-                public void onClick(View arg0) {
-                    Toast.makeText(getApplicationContext(),
-                            "Delete Button " + pos + " clicked",
-                            Toast.LENGTH_LONG).show();
-                    data.remove(position);
-                    notifyDataSetChanged();
-
-                }});
-        }
+//                }});
+//        }
 
 
 
-    }
+//    }
 }
