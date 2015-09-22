@@ -13,7 +13,7 @@
 
     <EditText
         android:id="@+id/item_new_Title"
-        android:text="New Item Titel"
+        android:text="New Item Title"
         android:layout_width="250dp"
         android:layout_height="60dp"
         android:textStyle="bold"

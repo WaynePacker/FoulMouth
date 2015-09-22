@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView android:id="@+id/item_day"
+    <TextView android:id="@+id/item_date"
         android:layout_width="50dp"
         android:layout_height="20dp"
         android:text="Day"
@@ -14,21 +14,21 @@
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp" />
 
-    <TextView android:id="@+id/item_month"
+    <TextView android:id="@+id/item_time"
         android:layout_width="50dp"
         android:layout_height="20dp"
         android:text="Month"
-        android:layout_below="@id/item_day"
+        android:layout_below="@id/item_date"
         android:layout_alignParentLeft="true"
 
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" />
 
-    <TextView android:id="@+id/item_year"
+    <TextView android:id="@+id/item_details"
         android:layout_width="50dp"
         android:layout_height="20dp"
         android:text="Year"
-        android:layout_below="@id/item_month"
+        android:layout_below="@id/item_time"
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp" />
@@ -37,12 +37,12 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Things I need to get done today"
-        android:layout_toRightOf="@id/item_month"
+        android:layout_toRightOf="@id/item_time"
         android:textStyle="bold"
         android:textSize="23dp"
         android:textIsSelectable="false"
-        android:layout_alignBottom="@+id/item_year"
-        android:layout_alignTop="@+id/item_day"
+        android:layout_alignBottom="@+id/item_details"
+        android:layout_alignTop="@+id/item_date"
         android:layout_toStartOf="@+id/button_editItem"
         android:layout_toLeftOf="@+id/button_editItem" />
 
