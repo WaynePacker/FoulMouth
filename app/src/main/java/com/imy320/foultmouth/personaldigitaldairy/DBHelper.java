@@ -38,6 +38,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(DBAbstract.DB_Diary.ENTRY_DATE, _date);
         contentValues.put(DBAbstract.DB_Diary.ENTRY_TIME, _time);
         contentValues.put(DBAbstract.DB_Diary.ENTRY_DETAILS, _details);
+
         db.insert(DBAbstract.DB_Diary.TABLE_NAME, DBAbstract.DB_Diary.ENTRY_DETAILS, contentValues);
         Log.e("DB_Opp: ","Data Inserted");
     }
@@ -49,6 +50,30 @@ public class DBHelper extends SQLiteOpenHelper
                 DBAbstract.DB_Diary.ENTRY_TIME, DBAbstract.DB_Diary.ENTRY_DETAILS};
         cursor = db.query(DBAbstract.DB_Diary.TABLE_NAME, projections, null, null, null, null, null);
         return cursor;
+    }
+
+    public void deleteEntry(String _title, SQLiteDatabase sqLiteDatabase)
+    {
+        String selection = DBAbstract.DB_Diary.ENTRY_TITLE+" LIKE ?";
+        String[] selectionArgs = {_title};
+
+        sqLiteDatabase.delete(DBAbstract.DB_Diary.TABLE_NAME, selection, selectionArgs);
+        Log.e("DB_Opp: ","Entry Deleted");
+    }
+
+    public void updateEntry(String oldTitle, String newTitle, String oldDate, String newDate, String oldTime,
+                            String newTime, String oldDetails, String newDetails, SQLiteDatabase sqLiteDatabase)
+    {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBAbstract.DB_Diary.ENTRY_TITLE, newTitle);
+        contentValues.put(DBAbstract.DB_Diary.ENTRY_DATE, newDate);
+        contentValues.put(DBAbstract.DB_Diary.ENTRY_TIME, newTime);
+        contentValues.put(DBAbstract.DB_Diary.ENTRY_DETAILS, newDetails);
+        String selection = DBAbstract.DB_Diary.ENTRY_TITLE + " LIKE ?";
+        String[] selectionArg = {oldTitle};
+
+        sqLiteDatabase.update(DBAbstract.DB_Diary.TABLE_NAME, contentValues, selection, selectionArg);
+        Log.e("DB_Opp: ", "Entry Updated");
     }
 
     @Override

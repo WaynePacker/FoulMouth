@@ -57,32 +57,9 @@ public class Home extends AppCompatActivity
 
                 DataProvider dataProvider = new DataProvider(title, date, time, details);
                 listDataAdapter.add(dataProvider);
+
             } while (cursor.moveToNext());
         }
-
-
-
-
-        /** TODO : load all the items' date and title into a array
-         * so that the rows can be populated in the main activity view.
-         */
-        //Test population for row
-        //DataItem itemOne = new DataItem("17/09/2015","Do this thing");
-        //DataItem itemTwo = new DataItem("17/09/2015","Some test to write");
-        //DataItem itemThree = new DataItem("17/09/2015","Bitches Be cray cray");
-
-        //TODO : once data is loaded into an array list of DataItem then replace in the statement below
-
-        //ArrayList<DataItem> todo =  new ArrayList<>();
-
-        //todo.add(itemOne);
-        //todo.add(itemTwo);
-        //todo.add(itemThree);
-
-        //listview.setAdapter(new CustomRowAdapter(this, todo));
-
-
-        //Assign and add the event listener on the 'addNew' button
 
         addNew_Button = (ImageButton) findViewById(R.id.button_addNew);
         addNew_Button.setOnClickListener(
@@ -92,12 +69,6 @@ public class Home extends AppCompatActivity
                 startActivity(new Intent(Home.this,AddNewItem.class ));
             }
         });
-
-
-
-
-
-
     }
 
 
@@ -125,21 +96,6 @@ public class Home extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-    //class DataItem
-    //{
-        /**TODO : reference body text and image and recoring items in this class
-         so that it can be passed to the edit activity*/
-
-    //    public String date;//TODO : Restructure this date from string to a more complex structure where day, month, year can be extracted individually
-    //      public String title = "title";
-
-     //   public DataItem(String date, String title)
-       // {
-        //    this.date = date;
-         //   this.title = title;
-        //}
-
-    //}
 
 //    class CustomRowAdapter extends BaseAdapter
 //    {
@@ -223,23 +179,19 @@ public class Home extends AppCompatActivity
 //                }});
 //        }
 
-//        private void deleteButtonClick(final int position, ImageButton editBut)
-//        {
-//            final int pos = position;
-//            editBut.setOnClickListener(new View.OnClickListener() {
-//                /** TODO : On the click of this button, the content of this item should be deleted off of the device and its entry in the database
-//                 * The content can be acquired by using data[position]
-//                 */
-//                @Override
-//                public void onClick(View arg0) {
-//                    Toast.makeText(getApplicationContext(),
-//                            "Delete Button " + pos + " clicked",
-//                            Toast.LENGTH_LONG).show();
-//                    data.remove(position);
-//                    notifyDataSetChanged();
-
-//                }});
-//        }
+        private void deleteButtonClick(final int position, ImageButton editBut)
+       {
+            final int pos = position;
+            editBut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    Toast.makeText(getApplicationContext(),
+                            "Delete Button " + pos + " clicked",
+                            Toast.LENGTH_LONG).show();
+                    //TODO: Get the title from the entry to be deleted.
+                    dbHelper.deleteEntry("title", sqLiteDatabase);
+                }});
+       }
 
 
 
