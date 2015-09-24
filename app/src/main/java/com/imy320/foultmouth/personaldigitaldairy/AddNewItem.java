@@ -3,6 +3,8 @@ package com.imy320.foultmouth.personaldigitaldairy;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
@@ -18,7 +20,12 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class AddNewItem extends  FragmentActivity {
+public class AddNewItem extends  FragmentActivity
+{
+
+    Context context = this;
+    DBHelper dbHelper;
+    SQLiteDatabase sqLiteDatabase;
 
     //Class to show the interface for picking a time
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener
@@ -48,7 +55,8 @@ public class AddNewItem extends  FragmentActivity {
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
     {
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
             // Use the current date as the default date in the picker
             final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
@@ -59,7 +67,8 @@ public class AddNewItem extends  FragmentActivity {
             return new DatePickerDialog(getActivity(), this, year, month, day);
         }
 
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
+        {
             //Call the activity whom opened this fragment and set its date to the user input, add 1 to month of year
             //to get the correct month(starts at 0 for Jan)
             ((AddNewItem) getActivity()).updateDate(dayOfMonth, monthOfYear + 1, year);
@@ -81,7 +90,8 @@ public class AddNewItem extends  FragmentActivity {
     private String item_Titel = "";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_item);
 
@@ -135,10 +145,12 @@ public class AddNewItem extends  FragmentActivity {
         });
 
         //Assign the save operation to the onclick of the save button
-        save_Button.setOnClickListener(new View.OnClickListener() {
+        save_Button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
-               // doSaveItem();
+            public void onClick(View v)
+            {
+               doSaveItem();
             }
         });
 
@@ -158,26 +170,6 @@ public class AddNewItem extends  FragmentActivity {
         });
     }
 
-    //Container class to store all the values from the new item
-    public class DataContainer
-    {
-        int day, year, month, hour, minute;
-        String title, body_text;
-
-        public DataContainer(int day, int month, int year, int hour, int minute, String title, String body_text)
-        {
-            this.day = day;
-            this.month = month;
-            this.year = year;
-
-            this.hour = hour;
-            this.minute = minute;
-
-            this.title = title;
-            this.body_text = body_text;
-        }
-    }
-
     //Save the content of the item
     public void doSaveItem()
     {
@@ -191,7 +183,15 @@ public class AddNewItem extends  FragmentActivity {
 
         DataContainer data = new DataContainer(curr_day, curr_month, curr_year, curr_hour, curr_minute, item_Titel, item_Text);
 
-        //TODO : use the data container to store all the data the user has inputted
+        String date = data.dateToString();
+        String time = data.timeToString();
+
+        dbHelper = new DBHelper(context);
+        sqLiteDatabase = dbHelper.getWritableDatabase();
+        dbHelper.insertEntry(data.title, date, time, data.bodyText, sqLiteDatabase);
+        Toast.makeText(getBaseContext(), "Entry Added", Toast.LENGTH_LONG).show();
+        dbHelper.close();
+
     }
 
 
