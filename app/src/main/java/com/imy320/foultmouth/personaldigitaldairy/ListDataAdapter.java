@@ -1,7 +1,9 @@
 package com.imy320.foultmouth.personaldigitaldairy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +90,10 @@ public class ListDataAdapter extends ArrayAdapter
 
         //Add onclick events to the edit and delete buttons of each of the row items
         ImageButton edit_Button = (ImageButton) row.findViewById(R.id.button_editItem);
+        editButtonClick(position, edit_Button,dataProvider.getEntryTitle(),
+                                               dataProvider.getEntryDate(),
+                                                dataProvider.getEntryTime(),
+                                                dataProvider.getEntryDetails() );
 
         ImageButton delete_button = (ImageButton) row.findViewById(R.id.button_deleteItem);
         deleteButtonClick(position, delete_button,dataProvider.getEntryTitle());
@@ -109,7 +115,37 @@ public class ListDataAdapter extends ArrayAdapter
                 dbHelper.deleteEntry(t, sqLiteDatabase);
                 list.remove(pos);
                 updateView();
-            }});
+            }
+        });
+    }
+
+    private void editButtonClick(final int position, ImageButton butt, String title, String date, String time, String details)
+    {
+        final int pos = position;
+        final String t = title;
+        final String d = date;
+        final String ti = time;
+        final String dtls = details;
+
+        butt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intentBundle = new Intent(appContext, AddNewItem.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("editing", true);
+                bundle.putString("title", t);
+                bundle.putString("date",d);
+                bundle.putString("time",ti);
+                bundle.putString("details", dtls);
+
+                intentBundle.putExtras(bundle);
+                intentBundle.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                appContext.startActivity(intentBundle);
+
+            }
+        });
     }
 
     //Update view after deletion

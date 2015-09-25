@@ -67,7 +67,7 @@ public class Home extends AppCompatActivity
                 new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Home.this,AddNewItem.class ));
+                createNewItem();
             }
         });
 
@@ -79,11 +79,19 @@ public class Home extends AppCompatActivity
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Home.this,AddNewItem.class ));
+                createNewItem();
             }
         });
     }
 
+    public void createNewItem()
+    {
+        Intent i = new Intent(Home.this,AddNewItem.class );
+        Bundle b = new Bundle();
+        b.putBoolean("editing",false);
+        i.putExtras(b);
+        startActivity(i);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

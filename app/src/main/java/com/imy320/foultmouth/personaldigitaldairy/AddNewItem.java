@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.DialogFragment;
@@ -84,11 +85,15 @@ public class AddNewItem extends  FragmentActivity
     TextView datePicker;
     //Variable TimePicker
     TextView timePicker;
+    //variable to see wether user is editing an existing item or adding a new one
+    Boolean editing = false;
 
     private int curr_year, curr_month, curr_day, curr_hour, curr_minute;
 
     private String item_Text = "";
     private String item_Titel = "";
+
+    private Bundle oldData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -96,6 +101,12 @@ public class AddNewItem extends  FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_item);
 
+        Intent intentExtras = getIntent();
+        Bundle extrasBundle = intentExtras.getExtras();
+        if(extrasBundle == null){
+            //Kill activity here if no data is present to populate fields
+            finish();
+        }
 
 
         //Assign the saveButton
@@ -105,7 +116,6 @@ public class AddNewItem extends  FragmentActivity
         //Assign the TimePicker
         timePicker =(TextView) findViewById(R.id.item_new_TimePicker);
 
-
         //set up the toolbar and its actions
         setupToolbar();
 
@@ -114,20 +124,17 @@ public class AddNewItem extends  FragmentActivity
         //of th input texts
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        //Assign the calender to access the current date and time values
-        final Calendar cal = Calendar.getInstance();
+        editing = extrasBundle.getBoolean("editing");
 
-        //Set the date value to the current date
-        curr_year = cal.get(Calendar.YEAR);
-        curr_month = cal.get(Calendar.MONTH);
-        curr_day = cal.get(Calendar.DAY_OF_MONTH);
-        updateDate(curr_day, curr_month, curr_year);
-
-        //Set the time value to the current time
-        curr_hour = cal.get(Calendar.HOUR_OF_DAY);
-        curr_minute = cal.get(Calendar.MINUTE);
-        updateTime(curr_hour, curr_minute);
-
+        if(editing)
+        {
+            oldData = extrasBundle;
+            editExisting();
+        }
+        else
+        {
+            addNew();
+        }
 
         //Assign the datePicker its click listener
         datePicker.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +164,48 @@ public class AddNewItem extends  FragmentActivity
 
     }
 
+
+    public void addNew()
+    {
+        //Assign the calender to access the current date and time values
+        final Calendar cal = Calendar.getInstance();
+
+        //Set the date value to the current date
+        curr_year = cal.get(Calendar.YEAR);
+        curr_month = cal.get(Calendar.MONTH);
+        curr_day = cal.get(Calendar.DAY_OF_MONTH);
+        updateDate(curr_day, curr_month, curr_year);
+
+        //Set the time value to the current time
+        curr_hour = cal.get(Calendar.HOUR_OF_DAY);
+        curr_minute = cal.get(Calendar.MINUTE);
+        updateTime(curr_hour, curr_minute);
+    }
+
+    public void editExisting()
+    {
+        //get out all the data from the bundle
+        String title = oldData.getString("title");
+        String date = oldData.getString("date");
+        String time = oldData.getString("time");
+        String details = oldData.getString("details");
+
+        //Update the title
+        EditText titleText = (EditText) findViewById(R.id.item_new_Title);
+        titleText.setText(title);
+
+        //Get the hour and minute from the time
+        String[] ti = time.split(":");
+        updateTime(Integer.parseInt(ti[0]), Integer.parseInt(ti[1]));
+
+        //Get the day, month and year from the date
+        String[] dte = date.split("-");
+        updateDate(Integer.parseInt(dte[0]), Integer.parseInt(dte[1]), Integer.parseInt(dte[2]));
+
+        //Update the details
+        EditText detailsText = (EditText) findViewById(R.id.item_new_Text);
+        detailsText.setText(details);
+    }
     //function to set up the various toolbar options
     public void setupToolbar()
     {
@@ -177,12 +226,12 @@ public class AddNewItem extends  FragmentActivity
     public void doSaveItem()
     {
         //Get the text of the item
-        EditText txt_ref = (EditText) findViewById(R.id.item_new_Text);
-        item_Text = txt_ref.getText().toString();
+        EditText itemDetails = (EditText) findViewById(R.id.item_new_Text);
+        item_Text = itemDetails.getText().toString();
 
         //Get the title of the item
-        EditText title_ref = (EditText) findViewById(R.id.item_new_Title);
-        item_Titel = title_ref.getText().toString();
+        EditText itemTitle = (EditText) findViewById(R.id.item_new_Title);
+        item_Titel = itemTitle.getText().toString();
 
         DataContainer data = new DataContainer(curr_day, curr_month, curr_year, curr_hour, curr_minute, item_Titel, item_Text);
 
@@ -191,8 +240,22 @@ public class AddNewItem extends  FragmentActivity
 
         dbHelper = new DBHelper(context);
         sqLiteDatabase = dbHelper.getWritableDatabase();
-        dbHelper.insertEntry(data.title, date, time, data.bodyText, sqLiteDatabase);
-        Toast.makeText(getBaseContext(), "Entry Added", Toast.LENGTH_LONG).show();
+
+        if(editing)
+        {
+            //get all the old data
+            String old_title = oldData.getString("title");
+            String old_date = oldData.getString("date");
+            String old_time = oldData.getString("time");
+            String old_details = oldData.getString("details");
+
+            dbHelper.updateEntry(old_title,data.title,old_date,date,old_time,time,old_details,data.bodyText,sqLiteDatabase);
+            Toast.makeText(getBaseContext(), "Entry updated", Toast.LENGTH_LONG).show();
+        }
+        else {
+            dbHelper.insertEntry(data.title, date, time, data.bodyText, sqLiteDatabase);
+            Toast.makeText(getBaseContext(), "Entry Added", Toast.LENGTH_LONG).show();
+        }
         dbHelper.close();
 
         finish();
