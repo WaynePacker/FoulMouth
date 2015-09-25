@@ -191,22 +191,5 @@ public class Home extends AppCompatActivity
 //                            Toast.LENGTH_LONG).show();
 //                }});
 //        }
-
-        private void deleteButtonClick(final int position, ImageButton editBut)
-       {
-            final int pos = position;
-            editBut.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    Toast.makeText(getApplicationContext(),
-                            "Delete Button " + pos + " clicked",
-                            Toast.LENGTH_LONG).show();
-                    //TODO: Get the title from the entry to be deleted.
-                    dbHelper.deleteEntry("title", sqLiteDatabase);
-                }});
-       }
-
-
-
 //    }
 }
