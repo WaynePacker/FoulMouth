@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,13 +38,12 @@ public class Home extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
         //instantiate the ListView in the main activity
         listview = (ListView) findViewById(R.id.listview);
         dbHelper = new DBHelper(getApplicationContext());
         sqLiteDatabase = dbHelper.getReadableDatabase();
         cursor = dbHelper.getInformation(sqLiteDatabase);
-        listDataAdapter = new ListDataAdapter(getApplicationContext(), R.layout.custom_row);
+        listDataAdapter = new ListDataAdapter(getApplicationContext(), R.layout.custom_row, sqLiteDatabase, dbHelper);
         listview.setAdapter(listDataAdapter);
 
 
@@ -64,6 +65,18 @@ public class Home extends AppCompatActivity
         addNew_Button = (ImageButton) findViewById(R.id.button_addNew);
         addNew_Button.setOnClickListener(
                 new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this,AddNewItem.class ));
+            }
+        });
+
+
+        //Create the button image on the toolbar
+        ImageButton addButton = (ImageButton) findViewById(R.id.toolbar_button_right);
+        addButton.setImageResource(R.drawable.ic_add);
+        addButton.setScaleType(ImageView.ScaleType.FIT_XY);
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Home.this,AddNewItem.class ));

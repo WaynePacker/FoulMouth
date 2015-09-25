@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -160,6 +161,8 @@ public class AddNewItem extends  FragmentActivity
     public void setupToolbar()
     {
         ImageButton exit_button = (ImageButton) findViewById(R.id.toolbar_button_right);
+        exit_button.setImageResource(R.drawable.ic_cancel);
+        exit_button.setScaleType(ImageView.ScaleType.FIT_XY);
         exit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,6 +194,8 @@ public class AddNewItem extends  FragmentActivity
         dbHelper.insertEntry(data.title, date, time, data.bodyText, sqLiteDatabase);
         Toast.makeText(getBaseContext(), "Entry Added", Toast.LENGTH_LONG).show();
         dbHelper.close();
+
+        finish();
 
     }
 

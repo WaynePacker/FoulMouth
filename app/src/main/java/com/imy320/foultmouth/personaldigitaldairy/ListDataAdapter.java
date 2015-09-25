@@ -1,17 +1,22 @@
 package com.imy320.foultmouth.personaldigitaldairy;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListDataAdapter extends ArrayAdapter
 {
+
+
     static class LayoutHandler
     {
         TextView TITLE;
@@ -21,10 +26,17 @@ public class ListDataAdapter extends ArrayAdapter
     }
 
     List list = new ArrayList();
+    Context appContext;
+    SQLiteDatabase sqLiteDatabase;
+    DBHelper dbHelper;
 
-    public ListDataAdapter(Context context, int resource)
+    public ListDataAdapter(Context context, int resource, SQLiteDatabase sqLiteDatabase,DBHelper dbHelper )
     {
         super(context, resource);
+        appContext = context;
+        this.sqLiteDatabase = sqLiteDatabase;
+        this.dbHelper = dbHelper;
+
     }
 
     @Override
@@ -74,6 +86,36 @@ public class ListDataAdapter extends ArrayAdapter
         layoutHandler.TIME.setText(dataProvider.getEntryTime());
         layoutHandler.DETAILS.setText(dataProvider.getEntryDetails());
 
+        //Add onclick events to the edit and delete buttons of each of the row items
+        ImageButton edit_Button = (ImageButton) row.findViewById(R.id.button_editItem);
+
+        ImageButton delete_button = (ImageButton) row.findViewById(R.id.button_deleteItem);
+        deleteButtonClick(position, delete_button,dataProvider.getEntryTitle());
+
         return row;
     }
+
+    private void deleteButtonClick(final int position, ImageButton butt, String title)
+    {
+        final int pos = position;
+        final String t = title;
+        butt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Toast.makeText(appContext,
+                        "Delete Button " + pos + " clicked",
+                        Toast.LENGTH_LONG).show();
+                //TODO: Get the title from the entry to be deleted.
+                dbHelper.deleteEntry(t, sqLiteDatabase);
+                list.remove(pos);
+                updateView();
+            }});
+    }
+
+    //Update view after deletion
+    private void updateView()
+    {
+        this.notifyDataSetChanged();
+    }
+
 }
