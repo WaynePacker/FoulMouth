@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="5dp">
 
     <TextView android:id="@+id/item_date"
         android:layout_width="50dp"
         android:layout_height="20dp"
-        android:text="Day"
+        android:text="@string/customRow_date"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
@@ -17,7 +18,7 @@
     <TextView android:id="@+id/item_time"
         android:layout_width="50dp"
         android:layout_height="20dp"
-        android:text="Month"
+        android:text="@string/customRow_time"
         android:layout_below="@id/item_date"
         android:layout_alignParentLeft="true"
 
@@ -25,26 +26,25 @@
         android:layout_marginRight="10dp" />
 
     <TextView android:id="@+id/item_details"
-        android:layout_width="50dp"
+        android:layout_width="200dp"
         android:layout_height="20dp"
-        android:text="Year"
-        android:layout_below="@id/item_time"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp" />
+        android:text="@string/customRow_details"
+        android:layout_below="@+id/item_time"
+        android:layout_alignStart="@+id/item_time"
+        android:layout_toStartOf="@+id/button_editItem" />
 
     <TextView android:id="@+id/item_title"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Things I need to get done today"
+        android:text="@string/customRow_title"
         android:layout_toRightOf="@id/item_time"
         android:textStyle="bold"
         android:textSize="20dp"
         android:textIsSelectable="false"
-        android:layout_alignBottom="@+id/item_details"
-        android:layout_alignTop="@+id/item_date"
         android:layout_toStartOf="@+id/button_editItem"
-        android:layout_toLeftOf="@+id/button_editItem" />
+        android:layout_toLeftOf="@+id/button_editItem"
+        android:layout_above="@+id/item_details"
+        android:layout_alignTop="@+id/button_editItem" />
 
     <ImageButton android:id="@+id/button_deleteItem"
         android:layout_width="50dp"
@@ -66,7 +66,8 @@
         android:layout_toLeftOf="@id/button_deleteItem"
         android:background="@color/ColorPrimaryDark"
         android:layout_marginRight="5dp"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        android:layout_marginLeft="2.5dp" />
 
 
 

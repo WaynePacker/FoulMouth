@@ -1,6 +1,8 @@
 package com.imy320.foultmouth.personaldigitaldairy;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,13 +10,16 @@ import android.graphics.Bitmap;
 import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -47,6 +52,8 @@ public class Home extends AppCompatActivity
         listview.setAdapter(listDataAdapter);
 
 
+
+
         if(cursor.moveToFirst())
         {
             do {
@@ -71,6 +78,10 @@ public class Home extends AppCompatActivity
             }
         });
 
+        //Adjust the scrolling settings when keyboard is active
+        //Without this line the circle button scrolls up with the keyboard obstructing the view
+        //of th input texts
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         //Create the button image on the toolbar
         ImageButton addButton = (ImageButton) findViewById(R.id.toolbar_button_right);
@@ -82,6 +93,50 @@ public class Home extends AppCompatActivity
                 createNewItem();
             }
         });
+
+
+
+        //Assign the dialog controls on the email button
+        ImageButton emailButton = (ImageButton) findViewById(R.id.toolbar_button_email);
+        emailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                doEmailDialog();
+            }
+        });
+
+    }
+
+    private String emailAdress = "";
+    public void doEmailDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Send to email");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected;
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                emailAdress = input.getText().toString();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+        //TODO: send all the items to the input email adress
     }
 
     public void createNewItem()

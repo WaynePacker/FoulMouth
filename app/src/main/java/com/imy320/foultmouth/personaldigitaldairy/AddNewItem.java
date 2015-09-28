@@ -220,6 +220,10 @@ public class AddNewItem extends  FragmentActivity
                 finish();
             }
         });
+
+        ImageButton email_button = (ImageButton) findViewById(R.id.toolbar_button_email);
+        email_button.setVisibility(View.INVISIBLE);
+        email_button.setEnabled(false);
     }
 
     //Save the content of the item
