@@ -44,7 +44,8 @@
         android:layout_toStartOf="@+id/button_editItem"
         android:layout_toLeftOf="@+id/button_editItem"
         android:layout_above="@+id/item_details"
-        android:layout_alignTop="@+id/button_editItem" />
+        android:layout_alignTop="@+id/button_editItem"
+        android:digits="15" />
 
     <ImageButton android:id="@+id/button_deleteItem"
         android:layout_width="50dp"

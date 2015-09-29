@@ -3,6 +3,7 @@
     package="com.imy320.foultmouth.personaldigitaldairy" >
 
     <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"

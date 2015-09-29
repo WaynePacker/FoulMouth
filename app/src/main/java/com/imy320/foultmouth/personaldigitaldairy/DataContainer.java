@@ -25,6 +25,9 @@ public class DataContainer
 
     public String timeToString()
     {
+        if(minute < 10)
+          return hour + ":0"+minute;
+
         return hour+":"+minute;
     }
 }

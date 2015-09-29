@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/tool_bar"
+        layout="@layout/home_toolbar"
 
         />
 
@@ -35,4 +35,5 @@
         android:clickable="true"
         android:src="@drawable/ic_add"
         android:scaleType="fitXY" />
+
 </RelativeLayout>

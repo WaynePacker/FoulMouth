@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ListDataAdapter extends ArrayAdapter
@@ -84,7 +85,7 @@ public class ListDataAdapter extends ArrayAdapter
         }
         DataProvider dataProvider = (DataProvider)this.getItem(position);
         layoutHandler.TITLE.setText(dataProvider.getEntryTitle());
-        layoutHandler.DATE.setText(dataProvider.getEntryDate());
+        layoutHandler.DATE.setText(extractDate(dataProvider.getEntryDate()));
         layoutHandler.TIME.setText(dataProvider.getEntryTime());
         layoutHandler.DETAILS.setText(dataProvider.getEntryDetails());
 
@@ -101,6 +102,34 @@ public class ListDataAdapter extends ArrayAdapter
         return row;
     }
 
+    private String extractDate(String date)
+    {
+        char separator = '-';
+        int day = Integer.parseInt(date.substring(0,date.indexOf(separator)));
+        int month = Integer.parseInt(date.substring(date.indexOf(separator)+1, date.lastIndexOf(separator)));
+
+        String montName = "";
+
+        switch (month)
+        {
+            case 1 :  montName = "Jan"; break;
+            case 2 :  montName = "Feb"; break;
+            case 3 :  montName = "Mar"; break;
+            case 4 :  montName = "Apr"; break;
+            case 5 :  montName = "May"; break;
+            case 6 :  montName = "Jun"; break;
+            case 7 :  montName = "Jul"; break;
+            case 8 :  montName = "Aug"; break;
+            case 9 :  montName = "Sep"; break;
+            case 10 :  montName = "Oct"; break;
+            case 11 :  montName = "Nov"; break;
+            case 12 :  montName = "Dec"; break;
+        }
+
+        return  day + " " + montName;
+
+    }
+
     private void deleteButtonClick(final int position, ImageButton butt, String title)
     {
         final int pos = position;
@@ -108,10 +137,6 @@ public class ListDataAdapter extends ArrayAdapter
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                Toast.makeText(appContext,
-                        "Delete Button " + pos + " clicked",
-                        Toast.LENGTH_LONG).show();
-                //TODO: Get the title from the entry to be deleted.
                 dbHelper.deleteEntry(t, sqLiteDatabase);
                 list.remove(pos);
                 updateView();

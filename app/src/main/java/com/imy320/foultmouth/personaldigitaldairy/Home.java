@@ -1,35 +1,35 @@
 package com.imy320.foultmouth.personaldigitaldairy;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.media.Image;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class Home extends AppCompatActivity
-{
+import java.util.Date;
+
+///Openweather API e7f3bf94d17a443a1de6ec8945eb7761
+
+public class Home extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     SQLiteDatabase sqLiteDatabase;
     DBHelper dbHelper;
@@ -38,11 +38,23 @@ public class Home extends AppCompatActivity
     ImageButton addNew_Button;
     ListDataAdapter listDataAdapter;
 
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    String mLatitude = "";
+    String mLongitude = "";
+
+    Weather weather = new Weather();
+    TextView toolbar_weather;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        //set up all the toolbar displays and functions
+        setupToolbar();
+
+
         //instantiate the ListView in the main activity
         listview = (ListView) findViewById(R.id.listview);
         dbHelper = new DBHelper(getApplicationContext());
@@ -50,7 +62,6 @@ public class Home extends AppCompatActivity
         cursor = dbHelper.getInformation(sqLiteDatabase);
         listDataAdapter = new ListDataAdapter(getApplicationContext(), R.layout.custom_row, sqLiteDatabase, dbHelper);
         listview.setAdapter(listDataAdapter);
-
 
 
 
@@ -69,9 +80,10 @@ public class Home extends AppCompatActivity
             } while (cursor.moveToNext());
         }
 
+
+        //Add new item buttons
         addNew_Button = (ImageButton) findViewById(R.id.button_addNew);
-        addNew_Button.setOnClickListener(
-                new View.OnClickListener() {
+        addNew_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createNewItem();
@@ -83,28 +95,118 @@ public class Home extends AppCompatActivity
         //of th input texts
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        //Create the button image on the toolbar
-        ImageButton addButton = (ImageButton) findViewById(R.id.toolbar_button_right);
-        addButton.setImageResource(R.drawable.ic_add);
-        addButton.setScaleType(ImageView.ScaleType.FIT_XY);
-        addButton.setOnClickListener(new View.OnClickListener() {
+        //Location Services
+        buildGoogleApiClient();
+        mGoogleApiClient.connect();
+
+    }
+
+    //location  functions
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+
+    private class RequestWeatherUpdate extends AsyncTask<String, Void, String>
+    {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String data = ( (new WeatherHttpClient()).getWeatherData(params[0]));
+            //  System.out.println("/////////////////////// " + data );
+            try {
+
+                JSONWeatherParser weatherParser = new JSONWeatherParser();
+                weather = weatherParser.getWeather(data);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return weather.temperature.getTemp() + " C";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            updateWeather();
+        }
+    }
+
+
+
+
+    public void updateWeather()
+    {
+        toolbar_weather.setText(weather.temperature.getTemp() + "\u00b0");
+    }
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            mLatitude = String.valueOf(mLastLocation.getLatitude());
+            mLatitude = mLatitude.substring(0, 5);
+            mLongitude = String.valueOf(mLastLocation.getLongitude());
+            mLongitude = mLongitude.substring(0, 5);
+
+            toolbar_weather.setText("");
+
+            new RequestWeatherUpdate().execute("lat=" + mLatitude + "&lon=" + mLongitude);
+
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        toolbar_weather.setText("connection suspended");
+    }
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        toolbar_weather.setText("connection failed");
+    }
+
+
+    public void setupToolbar()
+    {
+        toolbar_weather = (TextView) findViewById(R.id.toolbar_weather);
+        //Set up the toolbar add new
+        ImageButton toolbar_addNew_Button = (ImageButton) findViewById(R.id.toolbar_button_add);
+        toolbar_addNew_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createNewItem();
             }
         });
 
-
-
         //Assign the dialog controls on the email button
         ImageButton emailButton = (ImageButton) findViewById(R.id.toolbar_button_email);
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 doEmailDialog();
             }
         });
+
+
+
+        String monthName = (String)android.text.format.DateFormat.format("MMMM", new Date());
+        String day = (String) android.text.format.DateFormat.format("dd", new Date());
+        TextView toolbar_date = (TextView) findViewById(R.id.toolbar_Date);
+        toolbar_date.setText(day + " " + monthName);
+
+        String dayName = (String)android.text.format.DateFormat.format("EEEE", new Date());
+        TextView toolbar_dayName = (TextView) findViewById(R.id.toolbar_dayName);
+        toolbar_dayName.setText(dayName);
+
+        String currentTime = (String)android.text.format.DateFormat.format("HH:mm", new Date());
+        TextView toolbar_time = (TextView)findViewById(R.id.toolbar_Time);
+        toolbar_time.setText(currentTime);
+
+
 
     }
 
@@ -173,86 +275,6 @@ public class Home extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-//    class CustomRowAdapter extends BaseAdapter
-//    {
-//        Context context;
-//        ArrayList<DataItem> data;
-//        private LayoutInflater inflater = null;
-
-//        public CustomRowAdapter(Context context, ArrayList<DataItem> data)
-//       {
-//            this.context = context;
-//            this.data = data;
-//            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        }
-
-//        @Override
-//        public int getCount()
-//        {
-//            return data.size();
-//        }
-
-//        @Override
-//        public Object getItem(int position)
-//        {
-//            return data.get(position);
-//        }
-
-//        @Override
-//        public long getItemId(int position)
-//        {
-//            return position;
-//        }
-
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup parent)
-//        {
-//            //TODO : Use exctraction of date to populate correct fields in custom_row.xml
-//            View vi = convertView;
-//            if (vi == null)
-//                vi = inflater.inflate(R.layout.custom_row, null);
-
-            //Populate a single row item
-            //Day
-//            TextView textView = (TextView) vi.findViewById(R.id.item_day);
-//            textView.setText(data.get(position).date);
-//            //Month
-//            textView = (TextView) vi.findViewById(R.id.item_month);
-//            textView.setText(data.get(position).date);
-//            //Year
-//            textView = (TextView) vi.findViewById(R.id.item_year);
-//            textView.setText(data.get(position).date);
-//            //Title
-//            textView = (TextView) vi.findViewById(R.id.item_title);
-//            textView.setText(data.get(position).title);
 
 
-//            //Add onclick events to the edit and delete buttons of each of the row items
-//            ImageButton edit_Button = (ImageButton)vi.findViewById(R.id.button_editItem);
-//            ImageButton delete_button = (ImageButton)vi.findViewById(R.id.button_deleteItem);
-//            editButtonClick(position, edit_Button);
-//            deleteButtonClick(position,delete_button);
-
-//            return vi;
-//        }
-
-//        private void editButtonClick(int position, ImageButton editBut)
- //       {
-//            final int pos = position;
- //           editBut.setOnClickListener(new View.OnClickListener() {
-//
- //               @Override
-//                public void onClick(View arg0) {
-//
-//                    /** TODO : On the click of this button, a new activity should be started to edit the content of the button
-//                     * The content can be acquired by using data[position]
-//                     */
-//
-//
-//                    Toast.makeText(getApplicationContext(),
-//                            "Edit Button " + pos + " clicked",
-//                            Toast.LENGTH_LONG).show();
-//                }});
-//        }
-//    }
 }

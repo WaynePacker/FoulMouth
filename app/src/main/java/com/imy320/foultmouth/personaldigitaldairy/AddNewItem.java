@@ -172,7 +172,7 @@ public class AddNewItem extends  FragmentActivity
 
         //Set the date value to the current date
         curr_year = cal.get(Calendar.YEAR);
-        curr_month = cal.get(Calendar.MONTH);
+        curr_month = cal.get(Calendar.MONTH)+1;
         curr_day = cal.get(Calendar.DAY_OF_MONTH);
         updateDate(curr_day, curr_month, curr_year);
 
@@ -209,9 +209,7 @@ public class AddNewItem extends  FragmentActivity
     //function to set up the various toolbar options
     public void setupToolbar()
     {
-        ImageButton exit_button = (ImageButton) findViewById(R.id.toolbar_button_right);
-        exit_button.setImageResource(R.drawable.ic_cancel);
-        exit_button.setScaleType(ImageView.ScaleType.FIT_XY);
+        ImageButton exit_button = (ImageButton) findViewById(R.id.toolbar_button_cancel);
         exit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,9 +219,6 @@ public class AddNewItem extends  FragmentActivity
             }
         });
 
-        ImageButton email_button = (ImageButton) findViewById(R.id.toolbar_button_email);
-        email_button.setVisibility(View.INVISIBLE);
-        email_button.setEnabled(false);
     }
 
     //Save the content of the item
@@ -285,7 +280,11 @@ public class AddNewItem extends  FragmentActivity
     //Update the time TextView  in the view
     public void updateTime(int hour, int minute)
     {
-        timePicker.setText(hour + ":" + minute);
+        String zero = "";
+
+        if(minute < 10)
+            zero = "0";
+        timePicker.setText(hour + ":"+zero + minute);
 
         curr_hour = hour;
         curr_minute = minute;
