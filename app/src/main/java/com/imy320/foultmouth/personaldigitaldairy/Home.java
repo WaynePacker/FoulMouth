@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +14,14 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -45,11 +49,15 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     Weather weather = new Weather();
     TextView toolbar_weather;
+    TextView toolbar_weather_icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        this.overridePendingTransition(R.anim.slide_out,
+                R.anim.slide_in);
 
         //set up all the toolbar displays and functions
         setupToolbar();
@@ -136,13 +144,45 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         }
     }
 
-
-
-
     public void updateWeather()
     {
-        toolbar_weather.setText(weather.temperature.getTemp() + "\u00b0");
+
+        String icon = "1";
+        switch (weather.currentCondition.getIcon())
+        {
+            case "01n" :
+            case "01d" : icon = "1";
+                break;
+            case "02n" :
+            case "02d" : icon = "A";
+                break;
+            case "03n" :
+            case "03d" : icon = "3";
+                break;
+            case "04n" :
+            case "04d" : icon = "C";
+                break;
+            case "09d" :
+            case "09n" : icon = "J";
+               break;
+            case "10n" :
+            case "10d" : icon = "K";
+                break;
+            case "11n" :
+            case "11d" : icon = "P";
+                break;
+            case "13n" :
+            case "13d" : icon = "I";
+                break;
+            case "50d" :
+            case "50n" : icon = "C";
+                break;
+        }
+
+        toolbar_weather.setText(weather.temperature.getTemp() + "\u00b0" + " C" + System.lineSeparator() + weather.currentCondition.getDescr());
+        toolbar_weather_icon.setText(icon);
     }
+
     @Override
     public void onConnected(Bundle bundle) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -172,6 +212,10 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
     public void setupToolbar()
     {
+        toolbar_weather_icon = (TextView)(findViewById(R.id.toolbar_weather_icon));
+        Typeface face = Typeface.createFromAsset(getAssets(),"fonts/artill_clean_icons.ttf");
+        toolbar_weather_icon.setTypeface(face);
+
         toolbar_weather = (TextView) findViewById(R.id.toolbar_weather);
         //Set up the toolbar add new
         ImageButton toolbar_addNew_Button = (ImageButton) findViewById(R.id.toolbar_button_add);
@@ -206,8 +250,6 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
         TextView toolbar_time = (TextView)findViewById(R.id.toolbar_Time);
         toolbar_time.setText(currentTime);
 
-
-
     }
 
     private String emailAdress = "";
@@ -227,6 +269,8 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 emailAdress = input.getText().toString();
+                new EmailHandler(cursor).sendMail(emailAdress);
+                Toast.makeText(getBaseContext(), getString(R.string.sentEmail), Toast.LENGTH_SHORT).show();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -238,7 +282,7 @@ public class Home extends AppCompatActivity implements GoogleApiClient.Connectio
 
         builder.show();
 
-        //TODO: send all the items to the input email adress
+
     }
 
     public void createNewItem()

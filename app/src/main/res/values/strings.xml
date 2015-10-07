@@ -12,4 +12,21 @@
     <string name="customRow_time">time</string>
     <string name="customRow_details">details</string>
 
+    <string name="new_item_title">Item Title</string>string>
+    <string name="new_item_time">00:00</string>
+    <string name="new_item_date">00/00/0000</string>
+    <string name="new_item_description">Description:</string>
+    <string name="new_item_addNew_exit_message">Add New canceled, no data was saved</string>
+    <string name="new_item_edit_exit_message">Edit canceled, no changes where saved</string>
+    <string name="new_item_edit_save_message">Item changes where saved</string>
+    <string name="new_item_addNew_save_message">New Item saved</string>
+
+    <string name="toolbar_label_edit">Edit Item</string>
+    <string name="toolbar_label_addNew">Add New</string>
+
+    <string name="toolbar_label_dayName">Day Name</string>
+    <string name="toolbar_label_time">00:00</string>
+    <string name="toolbar_label_date">DayMonthName</string>
+
+    <string name="sentEmail">Email sent</string>
 </resources>

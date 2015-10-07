@@ -13,7 +13,7 @@
 
     <EditText
         android:id="@+id/item_new_Title"
-        android:text="New Item Title"
+        android:text="@string/new_item_title"
         android:layout_width="250dp"
         android:layout_height="60dp"
         android:textStyle="bold"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/item_new_DatePicker"
-        android:text="00/00/0000"
+        android:text="@string/new_item_date"
         android:layout_width="200dp"
         android:layout_height="60dp"
         android:clickable="true"
@@ -44,7 +44,7 @@
 
     <TextView
         android:id="@+id/item_new_TimePicker"
-        android:text="00 : 00"
+        android:text="@string/new_item_time"
         android:layout_width="130dp"
         android:layout_height="60dp"
         android:clickable="true"
@@ -61,11 +61,11 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:layout_below="@+id/item_new_DatePicker"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
         android:scrollbars="vertical"
-        android:maxHeight="400dp" />
+        android:maxHeight="400dp"
+        android:layout_below="@+id/item_new_desc_label"
+        android:layout_alignEnd="@+id/button_item_Save"
+        android:layout_alignStart="@+id/item_new_desc_label" />
 
     <ImageButton
         android:id="@+id/button_item_Save"
@@ -80,6 +80,16 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:clickable="true"
-        />
+        android:src="@drawable/ic_save"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_item_description"
+        android:id="@+id/item_new_desc_label"
+        android:layout_below="@+id/item_new_TimePicker"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp" />
 
 </RelativeLayout>

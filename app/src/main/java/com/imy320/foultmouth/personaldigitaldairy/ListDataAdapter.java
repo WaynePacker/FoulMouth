@@ -1,5 +1,6 @@
 package com.imy320.foultmouth.personaldigitaldairy;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -91,13 +93,14 @@ public class ListDataAdapter extends ArrayAdapter
 
         //Add onclick events to the edit and delete buttons of each of the row items
         ImageButton edit_Button = (ImageButton) row.findViewById(R.id.button_editItem);
-        editButtonClick(position, edit_Button,dataProvider.getEntryTitle(),
-                                               dataProvider.getEntryDate(),
-                                                dataProvider.getEntryTime(),
-                                                dataProvider.getEntryDetails() );
+        editButtonClick(position, edit_Button, dataProvider.getEntryTitle(),
+                dataProvider.getEntryDate(),
+                dataProvider.getEntryTime(),
+                dataProvider.getEntryDetails());
 
         ImageButton delete_button = (ImageButton) row.findViewById(R.id.button_deleteItem);
-        deleteButtonClick(position, delete_button,dataProvider.getEntryTitle());
+        deleteButtonClick(position, delete_button,dataProvider.getEntryTitle(), row);
+
 
         return row;
     }
@@ -130,7 +133,7 @@ public class ListDataAdapter extends ArrayAdapter
 
     }
 
-    private void deleteButtonClick(final int position, ImageButton butt, String title)
+    private void deleteButtonClick(final int position, ImageButton butt, String title, final View child)
     {
         final int pos = position;
         final String t = title;
@@ -138,7 +141,9 @@ public class ListDataAdapter extends ArrayAdapter
             @Override
             public void onClick(View arg0) {
                 dbHelper.deleteEntry(t, sqLiteDatabase);
+
                 list.remove(pos);
+                //child.animate().setDuration(1000).alpha(0);
                 updateView();
             }
         });

@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -25,6 +24,7 @@ import java.util.Calendar;
 public class AddNewItem extends  FragmentActivity
 {
 
+    String cancel_Message;
     Context context = this;
     DBHelper dbHelper;
     SQLiteDatabase sqLiteDatabase;
@@ -90,8 +90,6 @@ public class AddNewItem extends  FragmentActivity
 
     private int curr_year, curr_month, curr_day, curr_hour, curr_minute;
 
-    private String item_Text = "";
-    private String item_Titel = "";
 
     private Bundle oldData;
 
@@ -101,13 +99,16 @@ public class AddNewItem extends  FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_item);
 
+        this.overridePendingTransition(R.anim.slide_in,
+                R.anim.slide_out);
+
+
         Intent intentExtras = getIntent();
         Bundle extrasBundle = intentExtras.getExtras();
         if(extrasBundle == null){
             //Kill activity here if no data is present to populate fields
             finish();
         }
-
 
         //Assign the saveButton
         save_Button = (ImageButton) findViewById(R.id.button_item_Save);
@@ -126,13 +127,11 @@ public class AddNewItem extends  FragmentActivity
 
         editing = extrasBundle.getBoolean("editing");
 
-        if(editing)
-        {
+        if(editing) {
             oldData = extrasBundle;
             editExisting();
         }
-        else
-        {
+        else {
             addNew();
         }
 
@@ -164,7 +163,6 @@ public class AddNewItem extends  FragmentActivity
 
     }
 
-
     public void addNew()
     {
         //Assign the calender to access the current date and time values
@@ -180,6 +178,13 @@ public class AddNewItem extends  FragmentActivity
         curr_hour = cal.get(Calendar.HOUR_OF_DAY);
         curr_minute = cal.get(Calendar.MINUTE);
         updateTime(curr_hour, curr_minute);
+
+        //Set toolbar title
+        TextView toolbar_title = (TextView) findViewById(R.id.toolbar_Title);
+        toolbar_title.setText(getString(R.string.toolbar_label_addNew));
+
+        //Set the correct message on cancel
+        cancel_Message = getString(R.string.new_item_addNew_exit_message);
     }
 
     public void editExisting()
@@ -205,7 +210,15 @@ public class AddNewItem extends  FragmentActivity
         //Update the details
         EditText detailsText = (EditText) findViewById(R.id.item_new_Text);
         detailsText.setText(details);
+
+        //Set toolbar title
+        TextView toolbar_title = (TextView) findViewById(R.id.toolbar_Title);
+        toolbar_title.setText(getString(R.string.toolbar_label_edit));
+
+        //Set the correct message on cancel
+        cancel_Message = getString(R.string.new_item_edit_exit_message);
     }
+
     //function to set up the various toolbar options
     public void setupToolbar()
     {
@@ -213,8 +226,7 @@ public class AddNewItem extends  FragmentActivity
         exit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Add New Item cancel, no data was saved",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), cancel_Message,Toast.LENGTH_LONG).show();
                 finish();
             }
         });
@@ -224,15 +236,16 @@ public class AddNewItem extends  FragmentActivity
     //Save the content of the item
     public void doSaveItem()
     {
+
         //Get the text of the item
         EditText itemDetails = (EditText) findViewById(R.id.item_new_Text);
-        item_Text = itemDetails.getText().toString();
+        String item_Text = itemDetails.getText().toString();
 
         //Get the title of the item
         EditText itemTitle = (EditText) findViewById(R.id.item_new_Title);
-        item_Titel = itemTitle.getText().toString();
+        String item_Title = itemTitle.getText().toString();
 
-        DataContainer data = new DataContainer(curr_day, curr_month, curr_year, curr_hour, curr_minute, item_Titel, item_Text);
+        DataContainer data = new DataContainer(curr_day, curr_month, curr_year, curr_hour, curr_minute, item_Title, item_Text);
 
         String date = data.dateToString();
         String time = data.timeToString();
@@ -249,18 +262,17 @@ public class AddNewItem extends  FragmentActivity
             String old_details = oldData.getString("details");
 
             dbHelper.updateEntry(old_title,data.title,old_date,date,old_time,time,old_details,data.bodyText,sqLiteDatabase);
-            Toast.makeText(getBaseContext(), "Entry updated", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), getString(R.string.new_item_edit_save_message), Toast.LENGTH_LONG).show();
         }
         else {
             dbHelper.insertEntry(data.title, date, time, data.bodyText, sqLiteDatabase);
-            Toast.makeText(getBaseContext(), "Entry Added", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), getString(R.string.new_item_addNew_save_message), Toast.LENGTH_LONG).show();
         }
         dbHelper.close();
 
         finish();
 
     }
-
 
     //Display the Date Picker dialog
     public void doDatePicker(View view)
@@ -299,26 +311,4 @@ public class AddNewItem extends  FragmentActivity
         curr_month = month;
         curr_year = year;
     }
-
- /*   @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_new_item, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 }
