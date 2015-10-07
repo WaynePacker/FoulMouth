@@ -1,11 +1,9 @@
-package com.imy320.foultmouth.personaldigitaldairy;
+package com.imy320.foultmouth.personaldigitaldiary;
 
 /**
  * Created by Anthony on 9/29/2015.
  */
 
-
-import android.os.AsyncTask;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

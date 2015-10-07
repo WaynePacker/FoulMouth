@@ -20,7 +20,7 @@ android {
     buildToolsVersion "23.0.0"
 
     defaultConfig {
-        applicationId "com.imy320.foultmouth.personaldigitaldairy"
+        applicationId "com.imy320.foultmouth.personaldigitaldiary"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1

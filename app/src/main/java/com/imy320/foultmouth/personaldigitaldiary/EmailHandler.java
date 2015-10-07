@@ -1,4 +1,4 @@
-package com.imy320.foultmouth.personaldigitaldairy;
+package com.imy320.foultmouth.personaldigitaldiary;
 
 //TODO: if this does not connect to SMTP add the following line to manifest :
 //<uses-permission android:name="android.permission.INTERNET" />

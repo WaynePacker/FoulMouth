@@ -1,4 +1,4 @@
-package com.imy320.foultmouth.personaldigitaldairy;
+package com.imy320.foultmouth.personaldigitaldiary;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

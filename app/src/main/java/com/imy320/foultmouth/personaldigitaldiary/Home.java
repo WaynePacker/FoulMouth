@@ -1,4 +1,4 @@
-package com.imy320.foultmouth.personaldigitaldairy;
+package com.imy320.foultmouth.personaldigitaldiary;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,7 +14,6 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,7 +26,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 

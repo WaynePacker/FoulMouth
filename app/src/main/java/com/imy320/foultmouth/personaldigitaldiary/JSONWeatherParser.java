@@ -1,4 +1,4 @@
-package com.imy320.foultmouth.personaldigitaldairy;
+package com.imy320.foultmouth.personaldigitaldiary;
 
 /**
  * Created by Anthony on 9/29/2015.

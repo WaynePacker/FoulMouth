@@ -1,7 +1,5 @@
-package com.imy320.foultmouth.personaldigitaldairy;
+package com.imy320.foultmouth.personaldigitaldiary;
 
-
-import java.util.StringTokenizer;
 
 public class DataProvider
 {

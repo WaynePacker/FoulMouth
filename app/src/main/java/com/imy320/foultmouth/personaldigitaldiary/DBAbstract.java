@@ -1,4 +1,4 @@
-package com.imy320.foultmouth.personaldigitaldairy;
+package com.imy320.foultmouth.personaldigitaldiary;
 
 public class DBAbstract
 {
